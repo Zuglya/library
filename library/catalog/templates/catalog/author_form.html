@@ -1,0 +1,17 @@
+<!-- Шаблон создания и изменения автора -->
+
+{% extends "base_generic.html" %}
+
+{% block title %} <h1>Библиотека</h1> {% endblock %}
+
+{% block content %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Подтвердить" />
+
+</form>
+{% endblock %}

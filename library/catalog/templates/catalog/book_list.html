@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+
+{% block title %} <h1>Библиотека</h1> {% endblock %}
+
+{% block content %}
+    <h1>Список книг</h1>
+
+    {% if book_list %}
+        <!-- <ul> - маркированный список. <li> - элемент списка. -->
+        <!-- Если книги есть, то проходим по всем и выводим на страницу -->
+        <ul>
+            {% for book in book_list %}
+            <li>
+                <!-- Берём информацию из каждого элемента book списка book_list -->
+                <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+                ({{book.author}})
+            </li>
+            {% endfor %}
+
+        </ul>
+    {% else %}
+        <!-- Если книг в библиотеке нет-->
+        <p>В библиотеке книг нет.</p>
+    {% endif %}
+
+
+
+{% endblock %}
+
+{% block bot %}
+
+        <!-- Добавляем кнопку создания новой книги на страницу списка книг. -->
+        <p></p><a href="{% url 'book-create' %}">Создать новую книгу</a></p>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base_generic.html" %}
+
+{% block title %} <h1>Библиотека</h1> {% endblock %}
+
+{% block content %}
+    <h1>Название книги: {{ book.title }}</h1>
+
+    <p><strong>Автор:</strong> <a href="{% url 'author-detail' book.author.pk %}">{{ book.author }}</a></p>
+    <p><strong>Аннотация:</strong> {{ book.summary }}</p>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Язык:</strong> {{ book.language }}</p>
+    <p><strong>Жанр:</strong>
+        {% for genre in book.genre.all %}
+            {{ genre }}
+        {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
+    <div style="margin-left:20px;margin-top:20px">
+        <h4>Копии</h4>
+
+        {% for copy in book.bookinstance_set.all %}
+        <!-- book.bookinstance_set - "автоматически"-сконструированная
+        функция "обратного просмотра" ("reverse lookup") Django для того,
+        чтобы вернуть множество записей BookInstance, связанных с данной книгой Book.
+        Так как связь Book - BookInstance = Один ко Многим, то
+        модель Book "ничего не знает" про модель BookInstance,
+        поскольку на другой стороне ничего не объявлено-->
+        <!-- Итерации по каждой копии/экземпляру книги -->
+        <hr>
+        <p class="
+            {% if copy.status == 'д' %}
+                text-success
+            {% elif copy.status == 'd' %}
+                text-danger
+            {% else %}
+                text-warning
+            {% endif %}">{{ copy.get_status_display }}
+        </p>
+        {% if copy.status != 'д' %}
+            <p><strong>Будет возвращена:</strong> {{copy.due_back}}</p>
+        {% endif %}
+        <p><strong>Импринт:</strong> {{copy.imprint}}</p>
+        <p class="text-muted"><strong>Id:</strong> {{copy.id}}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block bot %}
+
+        <!-- Добавляем кнопку создания новой книги на страницу списка книг. -->
+        <p></p><a href="{% url 'book-update' book.id %}">Изменить информацию о книге</a></p>
+
+        <p></p><a href="{% url 'book-delete' book.id %}">Удалить книгу</a></p>
+
+{% endblock %}

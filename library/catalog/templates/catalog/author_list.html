@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+
+{% block title %} <h1>Библиотека</h1> {% endblock %}
+
+{% block content %}
+
+    <h1>Список авторов</h1>
+    <!-- Если авторы есть -->
+    {% if author_list %}
+        <ul>
+
+        {% for author in author_list %}
+          <li>
+            <a href="{{ author.get_absolute_url }}">
+            {{ author }}
+            <!-- Если автор умер выводим дату смерти -->
+            ({{author.date_of_birth}} -
+                {% if author.date_of_death %}
+                    {{author.date_of_death}}
+                {% endif %})
+            </a>
+          </li>
+        {% endfor %}
+
+       </ul>
+    <!-- Если авторов нет -->
+    {% else %}
+        <p>Нет доступных авторов.</p>
+    {% endif %}
+
+
+{% endblock %}
+
+{% block bot%}
+
+        <!-- Добавляем кнопку создания нового автора на страницу списка авторов. -->
+        <p></p><a href="{% url 'author-create' %}">Создать нового автора</a></p>
+
+{% endblock %}

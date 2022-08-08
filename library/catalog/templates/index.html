@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+
+{% block title %} <h1>Библиотека</h1> {% endblock %}
+
+{% block content %}
+<h1>Домашняя страница библиотеки</h1>
+
+    <p>Добро пожаловать в <em>Библиотеку</em>, созданную для итогового задания</p>
+
+<h2>Динамический контент</h2>
+
+    <p>В библиотеке имеется следующее количество записей:</p>
+    <!-- <ul> - маркированный список. <li> - элемент списка. -->
+    <ul>
+        <li><strong>Книги:</strong> {{ num_books }}</li>
+        <li><strong>Копии книг:</strong> {{ num_instances }}</li>
+        <li><strong>Доступные копии книг:</strong> {{ num_instances_available }}</li>
+        <li><strong>Авторы:</strong> {{ num_authors }}</li>
+    </ul>
+
+<!--    <p>Количество посещений: {{ num_visits }}</p>-->
+
+    <p>Вы посетили библиотеку {{ num_visits }}
+        {% if num_visits == 12 %}
+            Раз
+        {% elif num_visits == 13 %}
+            Раз
+        {% elif num_visits == 14 %}
+            Раз
+        <!-- num_visits|get_digit:"1" - берёт 1-ю цифру справа числа -->
+        {% elif num_visits|get_digit:"1" == 2 %}
+            Раза
+        {% elif num_visits|get_digit:"1" == 3 %}
+            Раза
+        {% elif num_visits|get_digit:"1" == 4 %}
+            Раза
+        {% else %}
+            Раз
+        {% endif %}.
+    </p>
+
+{% endblock %}

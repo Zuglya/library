@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Блок заголовка страницы -->
+    {% block title %}<title> Library </title>{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Добавление дополнительного статического CSS файла -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-2">
+                <!-- Блок навигации -->
+                {% block sidebar %}
+                    <ul class="sidebar-nav">
+                        <li><a href="{% url 'index' %}">Домашняя страница</a></li>
+                        <li><a href="{% url 'book' %}">Все книги</a></li>
+                        <li><a href="{% url 'authors' %}">Все авторы</a></li>
+
+                        <!-- {{user.is_authenticated}} - проверка на авторизацию-->
+                        <!-- Если авторизован: -->
+                        {% if user.is_authenticated %}
+                            <li>Вы: {{ user.get_username }}</li>
+                            <li><a href="{% url 'my-borrowed' %}">Книги на руках</a></li>
+                            <!-- ?next={{request.path}} - Означает, что следующий URL-адрес
+                            содержит адрес (URL) текущей страницы, в конце связанного URL-адреса.
+                            Перенаправит пользователя обратно на страницу,
+                            где он нажал кнопку выхода из системы. -->
+                            <li><a href="{% url 'logout' %}?next={{ request.path }}">Выйти</a></li>
+                        <!-- Если не авторизован -->
+                        {% else %}
+                            <!-- ?next={{request.path}} - Перенаправит пользователя обратно на страницу,
+                            где он нажал кнопку входа в систему. -->
+                            <a href="{% url 'login' %}?next={{ request.path }}">Войти</a></li>
+                        {% endif %}
+                    </ul>
+
+
+                    <!-- Если есть разрешение проставлять метку возврата книги, то показываем раздел для сотрудников-->
+                    {% if perms.catalog.can_mark_returned %}
+                        <hr>
+                        <ul class="sidebar-nav">
+                            <li>Для сотрудников:</li>
+                            {% if perms.catalog.can_mark_returned %}
+                                <li><a href="{% url 'all-books' %}">Все книги библиотеки</a></li>
+                                <li><a href="{% url 'all-borrowed' %}">Все книги, взятые пользователями</a></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+
+                {% endblock %}
+            </div>
+            <div class="col-sm-10 ">
+                <!-- Блок основного контента на странице -->
+                {% block content %}{% endblock %}
+
+                <!-- Постраничное отображение -->
+                {% block pagination %}
+                    <!-- Если указано количество для постраничного отображения,
+                    то отображаем панель навигации по страницам -->
+                    {% if is_paginated %}
+                        <div class="pagination">
+                            <span class="page-links">
+                                <!-- page_obj является объектом типа Paginator, который будет создаваться каждый раз,
+                                когда будет применяться постраничный вывод данных для текущей страницы.
+                                Он позволяет получить всю информацию о текущей странице,
+                                о предыдущих страницах, сколько всего страниц и так далее. -->
+                                {% if page_obj.has_previous %}
+                                        <!-- request.path - для получения URL-адреса текущей страницы,
+                                        для того, чтобы создать ссылки на соответствующие страницы-->
+                                    <a href="{{ request.path }}?page=
+                                        {{ page_obj.previous_page_number }}">Предыдущая</a>
+                                {% endif %}
+                                <!-- Отображение текущей страницы и общего количества страниц-->
+                                <span class="page-current">
+                                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                                </span>
+                                {% if page_obj.has_next %}
+                                    <a href="{{ request.path }}?page=
+                                        {{ page_obj.next_page_number }}">Следующая</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+
+                <!-- Блок для кнопок создания, изменения и удаления объектов -->
+                    <!-- Если есть разрешение проставлять метку возврата книги, то показываем раздел для сотрудников-->
+                {% if perms.catalog.can_mark_returned %}
+                    {% block bot %}{% endblock %}
+                {% endif %}
+
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

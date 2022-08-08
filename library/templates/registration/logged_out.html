@@ -1,0 +1,12 @@
+<!-- Шаблон выходы из библиотеки -->
+
+{% extends "base_generic.html" %}
+
+{% block title %} <h1>Библиотека</h1> {% endblock %}
+
+{% block content %}
+
+    <p>Logged out!</p>
+
+    <a href="{% url 'login'%}">Нажмите здесь, чтобы войти снова.</a>
+{% endblock %}
